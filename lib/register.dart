@@ -18,10 +18,6 @@ class _RegisterState extends State<Register> {
 
   bool isButtonEnabled() {
     return controller.emailController.text.isNotEmpty;
-    // return controller.fullnameController.text.isNotEmpty && controller.usernameController.text.isNotEmpty && controller.emailController.text.isNotEmpty && controller.passwordController.text.isNotEmpty;
-  }
-
-  Future<void> register(BuildContext context) async {
   }
 
   @override
