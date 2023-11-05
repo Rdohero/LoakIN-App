@@ -19,21 +19,7 @@ class _Register2State extends State<Register2> {
   }
 
   Future<void> register(BuildContext context) async {
-    final response = await controller.registerUser();
 
-    if (response.statusCode == 200) {
-      controller.passwordController.text = "";
-      Get.off(() => const Login());
-      final error = controller.tok;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
-    } else {
-      final error = controller.eror;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content:Text(error)),
-      );
-    }
   }
   @override
   Widget build(BuildContext context) {

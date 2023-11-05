@@ -4,7 +4,7 @@ Widget myTextField(TextEditingController controller, String myLabel, bool obscur
   return Container(
     margin: const EdgeInsets.only(top: 5, right: 30, left: 30,bottom: 5),
     child: TextField(
-      style: const TextStyle(color: Colors.black, fontSize: 14),
+      style: const TextStyle(color: Colors.black, fontSize: 15),
       autofocus: false,
       controller: controller,
       obscureText: obscure,

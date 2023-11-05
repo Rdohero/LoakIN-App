@@ -22,20 +22,6 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> register(BuildContext context) async {
-    final response = await controller.registerUser();
-
-    if (response.statusCode == 200) {
-      Get.off(const Login());
-      final error = controller.tok;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
-    } else {
-      final error = controller.eror;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content:Text(error)),
-      );
-    }
   }
 
   @override

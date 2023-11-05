@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:pas_android/api/api_utama.dart';
 
 class ApiLoginRegister extends GetxController{
-  var id = 0;
   var tok1 = "";
   var eror2 = "";
   var tok = "";

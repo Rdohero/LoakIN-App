@@ -32,7 +32,7 @@ Widget Profilee(controller) {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Under Maintance!!", style: TextStyle(fontSize: 20,color: Colors.red,fontWeight: FontWeight.bold),),
+              const Text("Under Maintance!!!!!!", style: TextStyle(fontSize: 20,color: Colors.red,fontWeight: FontWeight.bold),),
               Padding(
                 padding: const EdgeInsets.only(left: 15,top: 15),
                 child: ClipOval(

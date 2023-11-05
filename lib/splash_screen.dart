@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Loak",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.normal,fontSize: 60,decoration: TextDecoration.none,color: Colors.white)),
+            Text("Loak1",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.normal,fontSize: 60,decoration: TextDecoration.none,color: Colors.white)),
             Text("IN",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.bold,fontSize: 60,color: Color(0xFF0D5D97),decoration: TextDecoration.none)),
           ],
         ),

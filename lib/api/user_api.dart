@@ -10,11 +10,11 @@ class ControllerListUser extends GetxController {
 
   getUserByID() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var token = await pref.getString("Token");
+    var token1 = await pref.getString("Token");
     final response = await http.post(
       Uri.parse('${Api.baseUrl}/userAuth/getUser'),
       body: {
-        'Token' : token,
+        'Token' : token1,
       },
     );
 

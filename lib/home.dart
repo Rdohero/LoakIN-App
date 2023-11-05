@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/user_api.dart';
-import 'package:pas_android/splash_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
