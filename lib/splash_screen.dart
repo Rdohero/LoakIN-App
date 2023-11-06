@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pas_android/api/user_api.dart';
 import 'package:pas_android/bottom_navigator.dart';
-import 'package:pas_android/home.dart';
 import 'package:pas_android/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,21 +39,16 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: double.infinity,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/background_splash.jpg"),
-          fit: BoxFit.cover,
+      color: const Color(0xFF057ACE),
+      child: const Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Loak",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.normal,fontSize: 60,decoration: TextDecoration.none,color: Colors.white)),
+            Text("IN",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.bold,fontSize: 60,color: Color(0xFF0D5D97),decoration: TextDecoration.none)),
+          ],
         ),
-      ),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text("Loak",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.normal,fontSize: 60,decoration: TextDecoration.none,color: Colors.white)),
-          Text("IN",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.bold,fontSize: 60,color: Color(0xFF0D5D97),decoration: TextDecoration.none)),
-        ],
       ),
     );
   }

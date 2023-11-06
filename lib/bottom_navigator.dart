@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pas_android/home.dart';
 import 'package:pas_android/profile.dart';
 

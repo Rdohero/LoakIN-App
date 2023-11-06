@@ -22,7 +22,6 @@ class _HomeState extends State<Home> {
 }
 
 Widget home(controller,context) {
-  double screenHeight = MediaQuery.of(context).size.height;
   double screenWidth = MediaQuery.of(context).size.width;
   return Obx(() {
     late var user = controller.userById[0];
