@@ -47,7 +47,7 @@ class _Register2State extends State<Register2> {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/baground_login_daftar.png"),
+              image: AssetImage("assets/images/background_login_daftar.png"),
               fit: BoxFit.cover,
             ),
           ),

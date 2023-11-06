@@ -40,16 +40,21 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF057ACE),
-      child: const Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("Loak",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.normal,fontSize: 60,decoration: TextDecoration.none,color: Colors.white)),
-            Text("IN",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.bold,fontSize: 60,color: Color(0xFF0D5D97),decoration: TextDecoration.none)),
-          ],
+      height: double.infinity,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/background_splash.jpg"),
+          fit: BoxFit.cover,
         ),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text("Loak",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.normal,fontSize: 60,decoration: TextDecoration.none,color: Colors.white)),
+          Text("IN",style: TextStyle(fontFamily: "SFProDisplay",fontWeight: FontWeight.bold,fontSize: 60,color: Color(0xFF0D5D97),decoration: TextDecoration.none)),
+        ],
       ),
     );
   }
