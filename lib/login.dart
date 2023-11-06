@@ -49,7 +49,7 @@ class _LoginState extends State<Login> {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/baground_login_daftar.png"),
+              image: AssetImage("assets/images/background_login_daftar.png"),
               fit: BoxFit.cover,
             ),
           ),
