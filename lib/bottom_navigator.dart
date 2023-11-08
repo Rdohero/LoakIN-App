@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pas_android/home.dart';
 import 'package:pas_android/profile.dart';
 
@@ -39,7 +38,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             icon: Icon(
               Icons.home_filled,
             ),
-            label: "Home1",
+            label: "Home",
           ),
           BottomNavigationBarItem(
             icon: Icon(

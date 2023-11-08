@@ -22,6 +22,19 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> login(BuildContext context) async {
+    final response = await controller.loginUser();
+
+    if (response.statusCode == 200) {
+      final token = controller.tok1;
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.setString("Token", token);
+      Get.off(() => SplashScreen());
+    } else {
+      final error = controller.eror2;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error)),
+      );
+    }
   }
 
   @override
@@ -36,7 +49,7 @@ class _LoginState extends State<Login> {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/baground_login_daftar.png"),
+              image: AssetImage("assets/images/background_login_daftar.png"),
               fit: BoxFit.cover,
             ),
           ),

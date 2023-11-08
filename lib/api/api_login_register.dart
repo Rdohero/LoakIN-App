@@ -14,6 +14,7 @@ class ApiLoginRegister extends GetxController{
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
 
   Future<http.Response> loginUser() async {
     final response = await http.post(
@@ -27,6 +28,25 @@ class ApiLoginRegister extends GetxController{
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       tok1 = jsonResponse["Token"];
+    } else {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      eror2 = jsonResponse["Error"];
+    }
+
+    return response;
+  }
+
+  Future<http.Response> otp() async {
+    final response = await http.post(
+      Uri.parse('${Api.baseUrl}/emailve'),
+      body: {
+        'Otp' : otpController.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      tok1 = jsonResponse["Status"];
     } else {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       eror2 = jsonResponse["Error"];
