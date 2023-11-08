@@ -41,12 +41,14 @@ dependencies:
   flutter_native_splash: ^2.3.5
   carousel_slider: ^4.2.1
   flutter_launcher_icons: ^0.13.1
+  pinput: ^3.0.1
+  smooth_page_indicator: ^1.1.0
 
 flutter_native_splash:
   android: true
   ios: true
   web: false
-  color: "#057ACE"
+  background_image: "assets/images/background_splash.jpg"
   image: "assets/images/logo_loakin.png"
 
 flutter_icons:
@@ -86,7 +88,8 @@ flutter:
 
   assets:
     - assets/images/icons_images/devicon_google.png
-    - assets/images/baground_login_daftar.png
+    - assets/images/background_login_daftar.png
+    - assets/images/background_splash.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
