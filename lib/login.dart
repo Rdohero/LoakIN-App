@@ -18,7 +18,8 @@ class _LoginState extends State<Login> {
   final ApiLoginRegister controller = Get.put(ApiLoginRegister());
 
   bool isButtonEnabled() {
-    return controller.emailusernameController.text.isNotEmpty && controller.passwordController.text.isNotEmpty;
+    return controller.emailusernameController.text.isNotEmpty &&
+        controller.passwordController.text.isNotEmpty;
   }
 
   Future<void> login(BuildContext context) async {
@@ -26,7 +27,8 @@ class _LoginState extends State<Login> {
 
     if (response.statusCode == 200) {
       final token = controller.tok1;
-      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
       sharedPreferences.setString("Token", token);
       Get.off(() => SplashScreen());
     } else {
@@ -62,16 +64,15 @@ class _LoginState extends State<Login> {
                   children: [
                     SizedBox(
                       width: screenWidth * 0.82,
-                      height: screenHeight * 0.06,
+                      height: screenHeight * 0.10,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Masuk Akun',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold
-                          ),
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -80,22 +81,15 @@ class _LoginState extends State<Login> {
                         'Email Or Username',
                         false,
                         TextInputType.emailAddress,
-                        Icons.email_rounded
-                    ),
-                    myTextField(
-                        controller.passwordController,
-                        'Password',
-                        true,
-                        TextInputType.text,
-                        Icons.lock
-                    ),
+                        Icons.email_rounded),
+                    myTextField(controller.passwordController, 'Password', true,
+                        TextInputType.text, Icons.lock),
                     SizedBox(
                       width: screenWidth * 0.82,
                       child: Align(
                         alignment: Alignment.topRight,
                         child: TextButton(
-                          onPressed: () {
-                          },
+                          onPressed: () {},
                           child: const Text(
                             "Lupa Password ?",
                             style: TextStyle(
@@ -106,21 +100,23 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: isButtonEnabled() ? () => {
-                        login(context)
-                      } : null,
+                      onPressed:
+                          isButtonEnabled() ? () => {login(context)} : null,
                       style: ElevatedButton.styleFrom(
                         disabledBackgroundColor: const Color(0xFFA8A8A8),
-                        foregroundColor: Colors.white, backgroundColor: const Color(0xFF0D5D97), shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFF0D5D97),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         minimumSize: Size(screenWidth * 0.7, 43),
                       ),
                       child: Text(
                         'Masuk',
                         style: TextStyle(
                           fontSize: 15,
-                          color: isButtonEnabled() ? Colors.white : Colors.white,
+                          color:
+                              isButtonEnabled() ? Colors.white : Colors.white,
                         ),
                       ),
                     ),
@@ -143,13 +139,24 @@ class _LoginState extends State<Login> {
                         buttonGoBuk(
                             null,
                             screenWidth,
-                            const Text("Google", style: TextStyle(color: Colors.black,fontSize: 11)),
-                            Image.asset("assets/images/icons_images/devicon_google.png",width: 20,height: 20,)
-                        ),
-                        buttonGoBuk(null,
-                            screenWidth,
-                            const Text("Facebook", style: TextStyle(color: Colors.black,fontSize: 11)),
-                            const Icon(Icons.facebook, color: Colors.blue,),
+                            const Text("Google",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 11)),
+                            Image.asset(
+                              "assets/images/icons_images/devicon_google.png",
+                              width: 20,
+                              height: 20,
+                            )),
+                        buttonGoBuk(
+                          null,
+                          screenWidth,
+                          const Text("Facebook",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 11)),
+                          const Icon(
+                            Icons.facebook,
+                            color: Colors.blue,
+                          ),
                         ),
                       ],
                     ),
@@ -159,7 +166,10 @@ class _LoginState extends State<Login> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Belum punya akun?", style: TextStyle(fontSize: 11),),
+                          const Text(
+                            "Belum punya akun?",
+                            style: TextStyle(fontSize: 11),
+                          ),
                           TextButton(
                             onPressed: () {
                               Get.off(() => const Register());
