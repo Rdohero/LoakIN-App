@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:pas_android/api/api_utama.dart';
 
-class ApiLoginRegister extends GetxController{
+class ApiLoginRegister extends ChangeNotifier{
   var tok1 = "";
   var eror2 = "";
   var tok = "";
@@ -32,7 +31,7 @@ class ApiLoginRegister extends GetxController{
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       eror2 = jsonResponse["Error"];
     }
-
+    notifyListeners();
     return response;
   }
 
@@ -51,7 +50,7 @@ class ApiLoginRegister extends GetxController{
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       eror2 = jsonResponse["Error"];
     }
-
+    notifyListeners();
     return response;
   }
 
@@ -73,7 +72,7 @@ class ApiLoginRegister extends GetxController{
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       eror = jsonResponse["Error"];
     }
-
+    notifyListeners();
     return response;
   }
 }

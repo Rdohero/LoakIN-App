@@ -1,42 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:pas_android/Widget/text_field_widget.dart';
+import 'package:pas_android/Component/text_field_widget.dart';
 import 'package:pas_android/api/api_login_register.dart';
 import 'package:pas_android/otp.dart';
+import 'package:provider/provider.dart';
 
-class Register2 extends StatefulWidget {
+class Register2 extends StatelessWidget {
   const Register2({super.key});
 
-  @override
-  State<Register2> createState() => _Register2State();
-}
-
-class _Register2State extends State<Register2> {
-  final ApiLoginRegister controller = Get.put(ApiLoginRegister());
-
-  bool isButtonEnabled() {
-    return controller.fullnameController.text.isNotEmpty && controller.usernameController.text.isNotEmpty && controller.emailController.text.isNotEmpty && controller.passwordController.text.isNotEmpty;
+  bool isButtonEnabled(BuildContext context) {
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
+    return controllerLoginRegister.fullnameController.text.isNotEmpty && controllerLoginRegister.usernameController.text.isNotEmpty && controllerLoginRegister.emailController.text.isNotEmpty && controllerLoginRegister.passwordController.text.isNotEmpty;
   }
 
   Future<void> register(BuildContext context) async {
-    final response = await controller.registerUser();
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
+
+    final response = await controllerLoginRegister.registerUser();
 
     if (response.statusCode == 200) {
-      controller.passwordController.text = "";
-      Get.off(() => const Otp());
-      final error = controller.tok;
+      controllerLoginRegister.passwordController.text = "";
+      Navigator.pushReplacement<void, void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => const Otp(),
+        ),
+      );
+      final error = controllerLoginRegister.tok;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error)),
       );
     } else {
-      final error = controller.eror;
+      final error = controllerLoginRegister.eror;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content:Text(error)),
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -74,21 +77,21 @@ class _Register2State extends State<Register2> {
                       ),
                     ),
                     myTextField(
-                        controller.fullnameController,
+                        controllerLoginRegister.fullnameController,
                         'Name',
                         false,
                         TextInputType.text,
                         Icons.person
                     ),
                     myTextField(
-                        controller.usernameController,
+                        controllerLoginRegister.usernameController,
                         'Username',
                         false,
                         TextInputType.text,
                         Icons.person
                     ),
                     myTextField(
-                        controller.passwordController,
+                        controllerLoginRegister.passwordController,
                         'Password',
                         true,
                         TextInputType.visiblePassword,
@@ -97,7 +100,7 @@ class _Register2State extends State<Register2> {
                     Padding(
                       padding: const EdgeInsets.only(top: 15,bottom: 15),
                       child: ElevatedButton(
-                        onPressed: isButtonEnabled() ? () => {
+                        onPressed: isButtonEnabled(context) ? () => {
                           register(context)
                         } : null,
                         style: ElevatedButton.styleFrom(
@@ -111,7 +114,7 @@ class _Register2State extends State<Register2> {
                           'Daftar',
                           style: TextStyle(
                             fontSize: 15,
-                            color: isButtonEnabled() ? Colors.white : Colors.white,
+                            color: isButtonEnabled(context) ? Colors.white : Colors.white,
                           ),
                         ),
                       ),

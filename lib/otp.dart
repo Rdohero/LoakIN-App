@@ -1,35 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pas_android/Widget/otp_field_widget.dart';
+import 'package:pas_android/Component/otp_field_widget.dart';
 import 'package:pas_android/api/api_login_register.dart';
 import 'package:pas_android/login.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
-class Otp extends StatefulWidget {
+class Otp extends StatelessWidget {
   const Otp({super.key});
 
-  @override
-  State<Otp> createState() => _OtpState();
-}
-
-class _OtpState extends State<Otp> {
-  final ApiLoginRegister controller = Get.put(ApiLoginRegister());
-
-  bool isButtonEnabled() {
-    return controller.otpController.text.isNotEmpty;
+  bool isButtonEnabled(BuildContext context) {
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
+    return controllerLoginRegister.otpController.text.isNotEmpty;
   }
 
   Future<void> otp(BuildContext context) async {
-    final response = await controller.otp();
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
+    final response = await controllerLoginRegister.otp();
 
     if (response.statusCode == 200) {
-      final status = controller.tok1;
+      final status = controllerLoginRegister.tok1;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(status)),
       );
-      Get.off(() => const Login());
+      Get.off(() => const Login(),);
     } else {
-      final error = controller.eror2;
+      final error = controllerLoginRegister.eror2;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error)),
       );
@@ -38,6 +34,7 @@ class _OtpState extends State<Otp> {
 
   @override
   Widget build(BuildContext context) {
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -84,13 +81,13 @@ class _OtpState extends State<Otp> {
                             border: Border.all(color: const Color(0xFFEDF1FF)),
                           ),
                         ),
-                        controller: controller.otpController,
+                        controller: controllerLoginRegister.otpController,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 15,bottom: 15),
                       child: ElevatedButton(
-                        onPressed: isButtonEnabled() ? () => {
+                        onPressed: isButtonEnabled(context) ? () => {
                           otp(context)
                         } : null,
                         style: ElevatedButton.styleFrom(
@@ -104,7 +101,7 @@ class _OtpState extends State<Otp> {
                           'Verify',
                           style: TextStyle(
                             fontSize: 15,
-                            color: isButtonEnabled() ? Colors.white : Colors.white,
+                            color: isButtonEnabled(context) ? Colors.white : Colors.white,
                           ),
                         ),
                       ),
