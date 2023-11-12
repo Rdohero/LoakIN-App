@@ -1,32 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/user_api.dart';
 import 'package:pas_android/splash_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
+class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-  final ControllerListUser controller = Get.put(ControllerListUser());
-
-  @override
   Widget build(BuildContext context) {
+    var controller = Provider.of<ControllerListUser>(context, listen: false);
     return Scaffold(
-      body: Profilee(controller),
+      body: profile(controller,context),
     );
   }
 }
 
-Widget Profilee(controller) {
+Widget profile(controller, BuildContext context) {
   late var user = controller.userById[0];
-  return Obx(() {
-    return controller.isLoading.value
+  return controller.isLoading
         ? const CircularProgressIndicator()
         : Center(
           child: Column(
@@ -64,7 +57,8 @@ Widget Profilee(controller) {
                     onPressed: () async {
                       SharedPreferences pref = await SharedPreferences.getInstance();
                       await pref.clear();
-                      Get.offAll(() => SplashScreen());
+                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      const SplashScreen()), (Route<dynamic> route) => false);
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.transparent,
@@ -91,6 +85,4 @@ Widget Profilee(controller) {
             ],
           ),
         );
-  }
-  );
 }

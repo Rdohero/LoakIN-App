@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:pas_android/api/navigator_provider.dart';
+import 'package:pas_android/cart_screen.dart';
 import 'package:pas_android/home.dart';
 import 'package:pas_android/profile.dart';
+import 'package:provider/provider.dart';
 
-class BottomNavigator extends StatefulWidget {
-  const BottomNavigator({super.key});
-
-  @override
-  State<BottomNavigator> createState() => _BottomNavigatorState();
-}
-
-class _BottomNavigatorState extends State<BottomNavigator> {
-  int _index = 0;
+class BottomNavigator extends StatelessWidget {
+  BottomNavigator({super.key});
 
   final screens = [
-    const Home(),
+    Home(),
+    const CartScreen(),
     const Profile(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    var currentIndex = Provider.of<BottomNavigationProvider>(context).currentIndex;
     return Scaffold(
       extendBody: true,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
+        currentIndex: currentIndex,
         onTap: (value) {
-          setState(() {
-            _index = value;
-          });
+          Provider.of<BottomNavigationProvider>(context, listen: false).currentIndex = value;
         },
         backgroundColor: Colors.white,
         unselectedItemColor: const Color(0xFF0479CD),
@@ -42,13 +38,19 @@ class _BottomNavigatorState extends State<BottomNavigator> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
+              Icons.shopping_cart_rounded,
+            ),
+            label: "Keranjang",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
               Icons.person,
             ),
             label: "Pengguna",
           ),
         ],
       ),
-      body: screens[_index],
+      body: screens[currentIndex],
     );
   }
 }

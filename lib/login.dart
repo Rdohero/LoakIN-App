@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:pas_android/Widget/google_facebook.dart';
-import 'package:pas_android/Widget/text_field_widget.dart';
+import 'package:pas_android/Component/google_facebook.dart';
+import 'package:pas_android/Component/text_field_widget.dart';
 import 'package:pas_android/api/api_login_register.dart';
 import 'package:pas_android/register.dart';
 import 'package:pas_android/splash_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatefulWidget {
+class Login extends StatelessWidget {
   const Login({super.key});
 
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
-  final ApiLoginRegister controller = Get.put(ApiLoginRegister());
-
-  bool isButtonEnabled() {
-    return controller.emailusernameController.text.isNotEmpty && controller.passwordController.text.isNotEmpty;
+  bool isButtonEnabled(BuildContext context) {
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
+    return controllerLoginRegister.emailusernameController.text.isNotEmpty && controllerLoginRegister.passwordController.text.isNotEmpty;
   }
 
   Future<void> login(BuildContext context) async {
-    final response = await controller.loginUser();
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
+    final response = await controllerLoginRegister.loginUser();
 
     if (response.statusCode == 200) {
-      final token = controller.tok1;
+      final token = controllerLoginRegister.tok1;
       final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
       sharedPreferences.setString("Token", token);
-      Get.off(() => SplashScreen());
+      Navigator.pushReplacement<void, void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => const SplashScreen(),
+        ),
+      );
     } else {
-      final error = controller.eror2;
+      final error = controllerLoginRegister.eror2;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error)),
       );
@@ -39,6 +39,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -68,22 +69,22 @@ class _LoginState extends State<Login> {
                         child: Text(
                           'Masuk Akun',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold
+                              color: Colors.black,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold
                           ),
                         ),
                       ),
                     ),
                     myTextField(
-                        controller.emailusernameController,
+                        controllerLoginRegister.emailusernameController,
                         'Email Or Username',
                         false,
                         TextInputType.emailAddress,
                         Icons.email_rounded
                     ),
                     myTextField(
-                        controller.passwordController,
+                        controllerLoginRegister.passwordController,
                         'Password',
                         true,
                         TextInputType.text,
@@ -106,7 +107,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: isButtonEnabled() ? () => {
+                      onPressed: isButtonEnabled(context) ? () => {
                         login(context)
                       } : null,
                       style: ElevatedButton.styleFrom(
@@ -120,7 +121,7 @@ class _LoginState extends State<Login> {
                         'Masuk',
                         style: TextStyle(
                           fontSize: 15,
-                          color: isButtonEnabled() ? Colors.white : Colors.white,
+                          color: isButtonEnabled(context) ? Colors.white : Colors.white,
                         ),
                       ),
                     ),
@@ -147,9 +148,9 @@ class _LoginState extends State<Login> {
                             Image.asset("assets/images/icons_images/devicon_google.png",width: 20,height: 20,)
                         ),
                         buttonGoBuk(null,
-                            screenWidth,
-                            const Text("Facebook", style: TextStyle(color: Colors.black,fontSize: 11)),
-                            const Icon(Icons.facebook, color: Colors.blue,),
+                          screenWidth,
+                          const Text("Facebook", style: TextStyle(color: Colors.black,fontSize: 11)),
+                          const Icon(Icons.facebook, color: Colors.blue,),
                         ),
                       ],
                     ),
@@ -162,7 +163,12 @@ class _LoginState extends State<Login> {
                           const Text("Belum punya akun?", style: TextStyle(fontSize: 11),),
                           TextButton(
                             onPressed: () {
-                              Get.off(() => const Register());
+                              Navigator.pushReplacement<void, void>(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) => const Register(),
+                                ),
+                              );
                             },
                             child: const Text(
                               "Daftar Sekarang !",
