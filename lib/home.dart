@@ -19,7 +19,7 @@ class Home extends StatelessWidget {
     'https://dotesports.com/wp-content/uploads/2023/07/kafka-smiling-honkai-star-rail.jpg',
     'https://assets.kompasiana.com/items/album/2021/10/01/eula-lawrence-6156077306310e70c73c02d2.jpg?t=o&v=740&x=416',
   ];
-
+ 
   @override
   Widget build(BuildContext context) {
     var controller = Provider.of<ControllerListUser>(context, listen: false);
