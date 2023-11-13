@@ -4,7 +4,6 @@ import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/model/product_model.dart';
 
 class ControllerProduct extends ChangeNotifier {
-  int quantity = 1;
   int index = 0;
   List<Product> productData = [];
   bool isLoading = true;

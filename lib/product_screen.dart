@@ -28,6 +28,7 @@ class ProductScreen extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: GestureDetector(
             onTap: () {
+              controllerCart.counter2 = 1;
               Navigator.pop(context);
             },
             child: const Row(
@@ -171,7 +172,7 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
       Navigator.pop(context);
     },
     child: Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40)),
       ),
@@ -197,9 +198,16 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                Text(moneyFormat(product.price).text),
-                  Text("stock"),
-              ],
+                  Consumer<ControllerCart>(
+                    builder: (context, controllerCart, child) {
+                      final totalPrice = moneyFormat(product.price * controllerCart.counter);
+                      return Text(
+                        totalPrice.text,
+                      );
+                    },
+                  ),
+                  const Text("stock"),
+                ],
               ),
             ],
           ),
@@ -207,7 +215,7 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
             padding: const EdgeInsets.only(top: 20,bottom: 20),
             child: Container(
               width: double.infinity,
-              decoration: ShapeDecoration(
+              decoration: const ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
                     width: 1,
@@ -218,30 +226,66 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () async {
-              final response = await controllerCart.addNewCart(controllerUser.userById[0].id, product.id, controllerProduct.quantity);
-              Navigator.pop(context);
-              if (response.statusCode == 200) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Berhasil Menambah Kerangjang")),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Gagal Menambah Kerangjang")),
-                );
-              }
-            },
+          Center(
             child: Container(
-              width: 100,
-              color: Colors.transparent,
-              child: const Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+              width: 130,
+              height: 50,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 2.0,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text("Check Out", style: TextStyle(fontSize: 15),),
-                  Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
+                  IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: () => controllerCart.decrement(),
+                  ),
+                  Consumer<ControllerCart>(
+                    builder: (context, controllerCart, child) {
+                      return Text(
+                        '${controllerCart.counter}',
+                        style: const TextStyle(fontSize: 24),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => controllerCart.increment(),
+                  ),
                 ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: GestureDetector(
+              onTap: () async {
+                final response = await controllerCart.addNewCart(controllerUser.userById[0].id, product.id, controllerCart.counter);
+                Navigator.pop(context);
+                if (response.statusCode == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Berhasil Menambah Kerangjang")),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Gagal Menambah Kerangjang")),
+                  );
+                }
+              },
+              child: Container(
+                width: 100,
+                color: Colors.transparent,
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Check Out", style: TextStyle(fontSize: 15),),
+                    Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
+                  ],
+                ),
               ),
             ),
           ),
