@@ -7,6 +7,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ControllerCart extends ChangeNotifier {
   List<Cart> cartData = [];
   bool isLoading = true;
+  int counter2 = 1;
+
+  int get counter => counter2;
+
+  void increment() {
+    counter2++;
+    notifyListeners();
+  }
+
+  void decrement() {
+    if (counter2 > 0) {
+      counter2--;
+      notifyListeners();
+    }
+  }
 
   getCart() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -35,6 +50,21 @@ class ControllerCart extends ChangeNotifier {
         'Productid': ProductID.toString(),
         'Quantity': Quantity.toString(),
       },
+    );
+
+    if (response.statusCode == 200) {
+      cartData = cartFromJson(response.body);
+      notifyListeners();
+    } else {
+      throw Exception('Failed to create cart');
+    }
+
+    return response;
+  }
+
+  Future<http.Response> deleteCart(int userID,int productID) async {
+    final response = await http.delete(
+      Uri.parse('${Api.baseUrl}/cart/$userID/$productID'),
     );
 
     if (response.statusCode == 200) {

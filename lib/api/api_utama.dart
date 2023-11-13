@@ -1,3 +1,3 @@
 class Api {
-  static const String baseUrl = 'https://authapi-production-34e8.up.railway.app';
+  static const String baseUrl = 'https://0dd3-43-252-106-166.ngrok-free.app';
 }

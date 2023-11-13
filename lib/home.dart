@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:pas_android/Component/money_format.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/model/product_model.dart';
