@@ -10,73 +10,336 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cartController = Provider.of<ControllerCart>(context, listen: false);
-    var userController = Provider.of<ControllerListUser>(context, listen: false);
+    var userController =
+        Provider.of<ControllerListUser>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(10.0),
+          child: Container(
+            height: 1.0,
+            color: Colors.grey.withOpacity(0.5),
+          ),
+        ),
         centerTitle: true,
-        title: const Text("Keranjang", style: TextStyle(fontWeight: FontWeight.w500,color: Colors.black),),
+        title: const Text(
+          "Keranjang",
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              fontFamily: 'SFProDisplay'),
+        ),
         leadingWidth: 100,
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (cartController.cartData.isEmpty)
-              const Center(
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Container(
+                margin: const EdgeInsets.only(left: 20),
                 child: Text(
-                  "Keranjang tidak ada",
-                  style: TextStyle(fontSize: 18),
+                  "Barang",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'SFProDisplay',
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
                 ),
-              )
-            else
-              ListView.builder(
-                itemCount: cartController.cartData.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final cart = cartController.cartData[index];
-                  final totalPrice = moneyFormat(cart.product.price * cart.quantity);
-                  return Dismissible(
-                    onDismissed: (direction) async {
-                      final response = await cartController.deleteCart(userController.userById[0].id, cart.product.id);
-                      if (response.statusCode == 200) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Berhasil Menghapus Keranjang")),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Gagal Menghapus Kerangjang")),
-                        );
-                      }
-                    },
-                    key: Key(cart.id.toString()),
-                    background: deleteBgItem(),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20,),
-                          Text(cart.product.name),
-                          Text("Total Harga : ${totalPrice.text}"),
-                          Text("Banyak : ${cart.quantity}"),
-                        ],
-                      ),
-                    ),
-                  );
-                },
               ),
+            ),
+            Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    activeColor: Colors.amber,
+                    value: true,
+                    onChanged: (value) {},
+                  ),
+                  Container(
+                    height: 110,
+                    width: 110,
+                    margin: EdgeInsets.only(top: 20, left: 20),
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, top: 10), // Add margin here
+                          child: Text(
+                            "Gitar Telecaster 1990",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'SFProDisplay',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 5),
+                          child: Text(
+                            "Telecaster Sunburst",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            "Kondisi: Masih baik",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 5),
+                          child: Text(
+                            "Rp. 13.000,00",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, top: 2),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color.fromARGB(255, 255, 38, 38),
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "Kudus, Besito",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontFamily: 'SFProDisplay',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    activeColor: Colors.amber,
+                    value: true,
+                    onChanged: (value) {},
+                  ),
+                  Container(
+                    height: 110,
+                    width: 110,
+                    margin: EdgeInsets.only(top: 20, left: 20),
+                    decoration: BoxDecoration(  
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, top: 10), // Add margin here
+                          child: Text(
+                            "Gitar Telecaster 1990",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'SFProDisplay',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 5),
+                          child: Text(
+                            "Telecaster Sunburst",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            "Kondisi: Masih baik",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 5),
+                          child: Text(
+                            "Rp. 13.000,00",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, top: 2),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color.fromARGB(255, 255, 38, 38),
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "Kudus, Besito",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontFamily: 'SFProDisplay',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    activeColor: Colors.amber,
+                    value: true,
+                    onChanged: (value) {},
+                  ),
+                  Container(
+                    height: 110,
+                    width: 110,
+                    margin: EdgeInsets.only(top: 20, left: 20),
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, top: 10), // Add margin here
+                          child: Text(
+                            "Gitar Telecaster 1990",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'SFProDisplay',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 5),
+                          child: Text(
+                            "Telecaster Sunburst",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            "Kondisi: Masih baik",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, top: 5),
+                          child: Text(
+                            "Rp. 13.000,00",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 0, 0, 0),
+                              fontFamily: 'SFProDisplay',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, top: 2),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color.fromARGB(255, 255, 38, 38),
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "Kudus, Besito",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  fontFamily: 'SFProDisplay',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-}
-
-Widget deleteBgItem() {
-  return Container(
-    alignment: Alignment.centerRight,
-    padding: const EdgeInsets.only(right: 20),
-    color: Colors.red,
-    child: const Icon(Icons.delete, color: Colors.white,),
-  );
 }
