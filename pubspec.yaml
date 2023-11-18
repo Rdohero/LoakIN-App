@@ -30,13 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    firebase_core:
-    cloud_firestore: ^4.5.0
-    image_cropper: ^1.4.1
-    image_picker: ^8.8.7+1
-    path_provider: ^2.0.2
-    flutter_image_compress: ^1.0.0
-    firebase_storage: ^11.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -51,6 +44,9 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   flutter_masked_text2: ^0.9.1
   provider:
+  flutter_staggered_animations: ^1.1.1
+  otp_timer_button: ^1.1.0
+  flutter_pw_validator: ^1.6.0
 
 flutter_native_splash:
   android: true
@@ -98,6 +94,14 @@ flutter:
     - assets/images/icons_images/devicon_google.png
     - assets/images/background_login_daftar.png
     - assets/images/background_splash.jpg
+    - assets/images/icons_images/home_icon.png
+    - assets/images/icons_images/keranjang_icon.png
+    - assets/images/icons_images/pengguna_icon.png
+    - assets/images/icons_images/home.png
+    - assets/images/icons_images/keranjang.png
+    - assets/images/icons_images/pengguna.png
+    - assets/images/background.png
+    - assets/images/gitar.jpeg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

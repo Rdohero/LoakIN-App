@@ -8,12 +8,47 @@ class ApiLoginRegister extends ChangeNotifier{
   var eror2 = "";
   var tok = "";
   var eror = "";
+  var tok2 = "";
+  var error3 = "";
   final TextEditingController emailusernameController = TextEditingController();
   final TextEditingController fullnameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
+
+  final TextEditingController emailOtpController = TextEditingController();
+
+  void disposeLoginController() {
+    passwordController.text = '';
+    emailusernameController.text = '';
+    notifyListeners();
+  }
+
+  void disposeRegisterController() {
+    passwordController.text = '';
+    emailController.text = '';
+    usernameController.text = '';
+    fullnameController.text = '';
+    notifyListeners();
+  }
+
+  void updateText(String newText, TextEditingController controller) {
+    controller.text = newText;
+    notifyListeners();
+  }
+
+  bool isButtonEnabledLogin(BuildContext context) {
+    return emailusernameController.text.isNotEmpty && passwordController.text.isNotEmpty;
+  }
+
+  bool isButtonEnabledEmail(BuildContext context) {
+    return emailController.text.isNotEmpty;
+  }
+
+  bool isButtonEnabledRegister(BuildContext context) {
+    return fullnameController.text.isNotEmpty && usernameController.text.isNotEmpty && emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+  }
 
   Future<http.Response> loginUser() async {
     final response = await http.post(
@@ -39,19 +74,32 @@ class ApiLoginRegister extends ChangeNotifier{
     final response = await http.post(
       Uri.parse('${Api.baseUrl}/emailve'),
       body: {
+        'Email' : emailOtpController.text,
         'Otp' : otpController.text,
       },
     );
 
     if (response.statusCode == 200) {
+      otpController.text = "";
+      error3 = "";
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      tok1 = jsonResponse["Status"];
+      tok2 = jsonResponse["Status"];
     } else {
+      otpController.text = "";
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      eror2 = jsonResponse["Error"];
+      error3 = jsonResponse["Error"];
     }
     notifyListeners();
     return response;
+  }
+
+  resendOtp() async {
+    await http.post(
+      Uri.parse('${Api.baseUrl}/resendOtp'),
+      body: {
+        'Email' : emailOtpController.text,
+      },
+    );
   }
 
   Future<http.Response> registerUser() async {
@@ -66,6 +114,13 @@ class ApiLoginRegister extends ChangeNotifier{
     );
 
     if (response.statusCode == 200) {
+      emailOtpController.text = emailController.text;
+      fullnameController.text = "";
+      usernameController.text = "";
+      emailController.text = "";
+      passwordController.text = "";
+      eror = "";
+      tok = "";
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       tok = jsonResponse["Status"];
     } else {
