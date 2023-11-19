@@ -25,27 +25,26 @@ class BottomNavigator extends StatelessWidget {
           Provider.of<BottomNavigationProvider>(context, listen: false).currentIndex = value;
         },
         backgroundColor: Colors.white,
-        unselectedItemColor: const Color(0xFF0479CD),
-        selectedItemColor: const Color(0xFF0479CD),
         selectedFontSize: 10,
+        unselectedIconTheme: const IconThemeData(size: 20),
+        selectedIconTheme: const IconThemeData(size: 20),
+        unselectedItemColor: const Color(0xFF0479CD),
+        selectedLabelStyle: const TextStyle(color: Color(0xFF0479CD)),
         unselectedFontSize: 10,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home_filled,
-            ),
+            activeIcon: ImageIcon(AssetImage("assets/images/icons_images/home_icon.png")),
+            icon: ImageIcon(AssetImage("assets/images/icons_images/home.png")),
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.shopping_cart_rounded,
-            ),
+            activeIcon: ImageIcon(AssetImage("assets/images/icons_images/keranjang_icon.png")),
+            icon: ImageIcon(AssetImage("assets/images/icons_images/keranjang.png")),
             label: "Keranjang",
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-            ),
+            activeIcon: ImageIcon(AssetImage("assets/images/icons_images/pengguna_icon.png")),
+            icon: ImageIcon(AssetImage("assets/images/icons_images/pengguna.png")),
             label: "Pengguna",
           ),
         ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pas_android/Component/text_field_widget.dart';
 import 'package:pas_android/api/api_auth.dart';
-import 'package:pas_android/forgot_new_password.dart';
+import 'package:pas_android/Forgot%20Password%20All%20Screen/forgot_new_password.dart';
 import 'package:provider/provider.dart';
 
 class OtpForgotPassword extends StatelessWidget {
