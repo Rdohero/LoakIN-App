@@ -116,22 +116,11 @@ class CartScreen extends StatelessWidget {
                                            maxLines: 1,
                                          ),
                                        ),
-                                       const Padding(
-                                         padding: EdgeInsets.only(left: 20, top: 5),
+                                        Padding(
+                                         padding: const EdgeInsets.only(left: 20, top: 5),
                                          child: Text(
-                                           "Telecaster Sunburst",
-                                           style: TextStyle(
-                                             fontSize: 12,
-                                             color: Colors.grey,
-                                             fontFamily: 'SFProDisplay',
-                                           ),
-                                         ),
-                                       ),
-                                       const Padding(
-                                         padding: EdgeInsets.only(left: 20),
-                                         child: Text(
-                                           "Kondisi: Masih baik",
-                                           style: TextStyle(
+                                           "${cart.quantity} barang",
+                                           style: const TextStyle(
                                              fontSize: 12,
                                              color: Colors.grey,
                                              fontFamily: 'SFProDisplay',

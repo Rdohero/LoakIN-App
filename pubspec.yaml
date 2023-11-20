@@ -47,6 +47,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   otp_timer_button: ^1.1.0
   flutter_pw_validator: ^1.6.0
+  image_picker: ^1.0.4
 
 flutter_native_splash:
   android: true

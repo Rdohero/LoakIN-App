@@ -4,6 +4,7 @@ import 'package:pas_android/api/api_auth.dart';
 import 'package:pas_android/api/carousel_controller.dart';
 import 'package:pas_android/api/cart_api.dart';
 import 'package:pas_android/api/navigator_provider.dart';
+import 'package:pas_android/api/poster_api.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
 import 'package:pas_android/splash_screen.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ControllerCart(),),
         ChangeNotifierProvider(create: (_) => ControllerListUser(),),
         ChangeNotifierProvider(create: (_) => BottomNavigationProvider(),),
+        ChangeNotifierProvider(create: (_) => ControllerPoster(),),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
