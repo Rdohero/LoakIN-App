@@ -4,6 +4,7 @@ import 'package:pas_android/Component/money_format.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/carousel_controller.dart';
 import 'package:pas_android/api/model/product_model.dart';
+import 'package:pas_android/api/poster_api.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
 import 'package:pas_android/product_screen.dart';
@@ -13,11 +14,6 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
-
-  final urlImages = [
-    'https://dotesports.com/wp-content/uploads/2023/07/kafka-smiling-honkai-star-rail.jpg',
-    'https://assets.kompasiana.com/items/album/2021/10/01/eula-lawrence-6156077306310e70c73c02d2.jpg?t=o&v=740&x=416',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +29,8 @@ class Home extends StatelessWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
           body:
-          Consumer3<ControllerListUser , CarouselIndex , ControllerProduct>(
-              builder: (context, controller, controllerCarousel , controllerProduct, child) {
+          Consumer4<ControllerListUser , CarouselIndex , ControllerProduct, ControllerPoster>(
+              builder: (context, controller, controllerCarousel , controllerProduct, controllerPoster, child) {
                 late var user = controller.userById[0];
                 return controller.isLoading ? const Center(child: CircularProgressIndicator()) : RefreshIndicator(
                   onRefresh: refresh,
@@ -45,7 +41,8 @@ class Home extends StatelessWidget {
                         Container(
                           width: double.infinity,
                           height: 25,
-                          decoration: const BoxDecoration(color: Color(0xFF0479CD)),),
+                          decoration: const BoxDecoration(color: Color(0xFF0479CD)),
+                        ),
                         Container(
                           width: double.infinity,
                           height: 150,
@@ -125,7 +122,8 @@ class Home extends StatelessWidget {
                                     SizedBox(
                                       width: screenWidth * 0.2,
                                       child: IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                        },
                                         icon: const Icon(Icons.notifications_none,color: Colors.white,size: 35),
                                       ),
                                     ),
@@ -151,23 +149,23 @@ class Home extends StatelessWidget {
                         ),
                         const SizedBox(height: 15,),
                         CarouselSlider.builder(
-                          itemCount: urlImages.length,
+                          itemCount: controllerPoster.posterData.length,
                           options: CarouselOptions(
                               enableInfiniteScroll: false,
                               autoPlay: true,
                               enlargeCenterPage: true,
                               autoPlayCurve: Curves.fastOutSlowIn,
                               autoPlayInterval: const Duration(seconds: 4),
-                              aspectRatio: 2.3/1,
+                              aspectRatio: 2.8/1,
                               onPageChanged: (index, reason) => controllerCarousel.change(index)
                           ),
                           itemBuilder: (context, index ,realIndex){
-                            final urlImage = urlImages[index];
-                            return buildImage(urlImage, index);
+                            final poster = controllerPoster.posterData[index];
+                            return buildImage(poster.poster, index);
                           },
                         ),
                         const SizedBox(height: 12,),
-                        Center(child: buildIndicator(controllerCarousel)),
+                        Center(child: buildIndicator(controllerCarousel, controllerPoster)),
                         Padding(
                           padding: const EdgeInsets.only(top: 20,bottom: 20),
                           child: Container(
@@ -192,12 +190,12 @@ class Home extends StatelessWidget {
       ),
     );
   }
-  Widget buildIndicator(CarouselIndex controllerCarousel) => Consumer<CarouselIndex>(
+  Widget buildIndicator(CarouselIndex controllerCarousel, ControllerPoster controllerPoster) => Consumer<CarouselIndex>(
     builder: (context, controllerCarousel, child) {
       return AnimatedSmoothIndicator(
           effect: const WormEffect(type: WormType.thin, dotWidth: 8,dotHeight: 8, activeDotColor: Colors.blue),
           activeIndex: controllerCarousel.activeIndex,
-          count: urlImages.length
+          count: controllerPoster.posterData.length
       );
     },
   );
@@ -206,7 +204,7 @@ class Home extends StatelessWidget {
 Widget buildImage(String urlImage, int index) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(10.0),
-    child: Image.network(urlImage, fit: BoxFit.cover),
+    child: Image.network( "${Api.baseUrl}/$urlImage", fit: BoxFit.cover),
   );
 }
 

@@ -12,9 +12,9 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controllerProduct = Provider.of<ControllerProduct>(context, listen: false);
-    var controllerCart = Provider.of<ControllerCart>(context, listen: false);
-    var controllerUser = Provider.of<ControllerListUser>(context, listen: false);
+    var controllerProduct = Provider.of<ControllerProduct>(context, listen: true);
+    var controllerCart = Provider.of<ControllerCart>(context, listen: true);
+    var controllerUser = Provider.of<ControllerListUser>(context, listen: true);
     late var product = controllerProduct.productData[controllerProduct.index.toInt()];
     return Scaffold(
       backgroundColor: Colors.white,
@@ -43,7 +43,7 @@ class ProductScreen extends StatelessWidget {
       body: controllerProduct.isLoading ? const Center(child: CircularProgressIndicator(color: Colors.blue,)) : detailProduct(controllerProduct),
       bottomSheet: Container(
         width: double.infinity,
-        height: 70,
+        height: 65,
         decoration: const ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -51,35 +51,8 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Total Price',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'SF Pro Text',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(
-                  child: Text(
-                    moneyFormat(product.price).text,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontFamily: 'SF Pro Text',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
             ElevatedButton(
               onPressed: () {
                 showModalBottomSheet(
@@ -92,16 +65,41 @@ class ProductScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 elevation: 0,
-                foregroundColor: Colors.white, backgroundColor: const Color(0xFFD9D9D9), shape: RoundedRectangleBorder(
+                shadowColor: Colors.transparent,
+                foregroundColor: Colors.white, backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+                minimumSize: const Size(50, 30),
+              ),
+              child: const Icon(
+                Icons.shopping_cart,
+                size: 20,
+                color: Colors.blue,
+              ),
+            ),
+            const VerticalDivider(
+              color: Colors.grey,
+              thickness: 1.0,
+              indent: 10,
+              endIndent: 10,
+            ),
+            ElevatedButton(
+              onPressed: () {
+              },
+              style: ElevatedButton.styleFrom(
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                foregroundColor: Colors.white, backgroundColor: Colors.white, shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
                 minimumSize: const Size(50, 30),
               ),
               child: const Text(
-                'Check Out',
+                'Checkout',
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.black,
+                  color: Colors.blue,
                 ),
               ),
             ),
@@ -176,13 +174,13 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
         color: Colors.white,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40)),
       ),
-      height: 400,
+      height: 300,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 width: 161,
@@ -194,20 +192,14 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
                   ),
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Consumer<ControllerCart>(
-                    builder: (context, controllerCart, child) {
-                      final totalPrice = moneyFormat(product.price * controllerCart.counter);
-                      return Text(
-                        totalPrice.text,
-                      );
-                    },
-                  ),
-                  const Text("stock"),
-                ],
+              Consumer<ControllerCart>(
+                builder: (context, controllerCart, child) {
+                  final totalPrice = moneyFormat(product.price * controllerCart.counter);
+                  return Text(
+                    totalPrice.text,
+                    style: const TextStyle(color: Colors.blue),
+                  );
+                },
               ),
             ],
           ),
@@ -228,32 +220,39 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
           ),
           Center(
             child: Container(
-              width: 130,
-              height: 50,
+              width: 100,
+              height: 40,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.blue,
                   width: 2.0,
                 ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: () => controllerCart.decrement(),
+                  Expanded(
+                    child: IconButton(
+                      icon: const Icon(Icons.remove, size: 15,color: Colors.blue,),
+                      onPressed: () => controllerCart.decrement(),
+                    ),
                   ),
-                  Consumer<ControllerCart>(
-                    builder: (context, controllerCart, child) {
-                      return Text(
-                        '${controllerCart.counter}',
-                        style: const TextStyle(fontSize: 24),
-                      );
-                    },
+                  Expanded(
+                    child: Consumer<ControllerCart>(
+                      builder: (context, controllerCart, child) {
+                        return Text(
+                          '${controllerCart.counter}',
+                          style: const TextStyle(fontSize: 15),
+                          textAlign: TextAlign.center,
+                        );
+                      },
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () => controllerCart.increment(),
+                  Expanded(
+                    child: IconButton(
+                      icon: const Icon(Icons.add, size: 15,color: Colors.blue,),
+                      onPressed: () => controllerCart.increment(),
+                    ),
                   ),
                 ],
               ),
@@ -266,23 +265,59 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
                 final response = await controllerCart.addNewCart(controllerUser.userById[0].id, product.id, controllerCart.counter);
                 Navigator.pop(context);
                 if (response.statusCode == 200) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Berhasil Menambah Kerangjang")),
+                  controllerCart.counter2 = 1;
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      backgroundColor: const Color(0xFFD9D9D9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text("Di tambahkan Ke Keranjang !"),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentTextStyle: const TextStyle(fontSize: 15,color: Colors.black),
+                    ),
                   );
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Gagal Menambah Kerangjang")),
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      backgroundColor: const Color(0xFFD9D9D9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text("Gagal Menambah Kerangjang"),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentTextStyle: const TextStyle(fontSize: 15,color: Colors.black),
+                    ),
                   );
                 }
               },
               child: Container(
-                width: 100,
                 color: Colors.transparent,
                 child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Check Out", style: TextStyle(fontSize: 15),),
+                    Text("Tambah Keranjang", style: TextStyle(fontSize: 15),),
                     Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
                   ],
                 ),

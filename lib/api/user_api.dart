@@ -1,12 +1,46 @@
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pas_android/api/api_utama.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:pas_android/api/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class ControllerListUser extends ChangeNotifier {
   List<User> userById = [];
+  XFile? returnedImage;
+
+  XFile? get returnedImage2 => returnedImage;
+
   bool isLoading = true;
+
+  Future<http.Response> updatePhotoUserData() async {
+    var returnedImage1 = returnedImage;
+    String imagePath = returnedImage1!.path;
+    String fileExtension = imagePath.split('.').last;
+    final imageBytes = await returnedImage1.readAsBytes();
+
+    final multipartFile = http.MultipartFile.fromBytes(
+      'foto',
+      imageBytes,
+      filename: returnedImage1.path,
+      contentType: MediaType('image', fileExtension),
+    );
+
+    final request = http.MultipartRequest('PUT', Uri.parse('${Api.baseUrl}/user/foto/${userById[0].id.toString()}'));
+    request.files.add(multipartFile);
+
+    final response = await request.send();
+
+    final streamedResponse = await http.Response.fromStream(response);
+
+    if (response.statusCode == 200) {
+      returnedImage = null;
+      userById = userFromJson(streamedResponse.body);
+    } else {
+    }
+    return streamedResponse;
+  }
 
   getUserByID() async {
     SharedPreferences pref = await SharedPreferences.getInstance();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pas_android/api/cart_api.dart';
+import 'package:pas_android/api/poster_api.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
 import 'package:pas_android/bottom_navigator.dart';
@@ -20,6 +21,7 @@ class SplashScreen extends StatelessWidget {
           var pref = snapshot.data as SharedPreferences;
           var controllerUser = Provider.of<ControllerListUser>(context, listen: false);
           var controllerCart = Provider.of<ControllerCart>(context, listen: false);
+          var controllerPoster = Provider.of<ControllerPoster>(context, listen: false);
           var controllerProduct = Provider.of<ControllerProduct>(context, listen: false);
 
           String? val = pref.getString("Token");
@@ -27,6 +29,7 @@ class SplashScreen extends StatelessWidget {
           if (val != null) {
             controllerCart.getCart();
             controllerProduct.getAllProduct();
+            controllerPoster.getPoster();
             controllerUser.getUserByID();
           }
 
