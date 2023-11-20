@@ -5,6 +5,15 @@ import 'package:pas_android/api/model/cart_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ControllerCart extends ChangeNotifier {
+  bool _isChecked = false;
+
+  bool get isChecked => _isChecked;
+
+  set isCheckedChange(bool value) {
+    _isChecked = value;
+    notifyListeners();
+  }
+
   List<Cart> cartData = [];
   bool isLoading = true;
   int counter2 = 1;

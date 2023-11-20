@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pas_android/api/cart_api.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
@@ -44,39 +45,47 @@ class SplashScreen extends StatelessWidget {
           });
           return Container(
             color: const Color(0xFF057ACE),
-            child: const Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Loak",
-                    style: TextStyle(
-                      fontFamily: "SFProDisplay",
-                      fontWeight: FontWeight.normal,
-                      fontSize: 60,
-                      decoration: TextDecoration.none,
-                      color: Colors.white,
-                    ),
+            child: Center(
+              child: AnimationLimiter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: AnimationConfiguration.toStaggeredList(
+                      childAnimationBuilder: (widget) => FadeInAnimation(
+                        duration: const Duration(milliseconds: 1000),
+                        child: widget,
+                      ),
+                      children: [
+                        const Text(
+                          "Loak",
+                          style: TextStyle(
+                            fontFamily: "SFProDisplay",
+                            fontWeight: FontWeight.normal,
+                            fontSize: 60,
+                            decoration: TextDecoration.none,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Text(
+                          "IN",
+                          style: TextStyle(
+                            fontFamily: "SFProDisplay",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 60,
+                            color: Color(0xFF0D5D97),
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ]
                   ),
-                  Text(
-                    "IN",
-                    style: TextStyle(
-                      fontFamily: "SFProDisplay",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 60,
-                      color: Color(0xFF0D5D97),
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           );
         } else {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: Center(child: CircularProgressIndicator()),
             ),
           );
         }

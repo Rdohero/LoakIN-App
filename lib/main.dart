@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pas_android/api/api_login_register.dart';
+import 'package:pas_android/api/api_auth.dart';
+import 'package:pas_android/api/carousel_controller.dart';
 import 'package:pas_android/api/cart_api.dart';
 import 'package:pas_android/api/navigator_provider.dart';
 import 'package:pas_android/api/product_api.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ApiLoginRegister(),),
+        ChangeNotifierProvider(create: (_) => CarouselIndex(),),
         ChangeNotifierProvider(create: (_) => ControllerProduct(),),
         ChangeNotifierProvider(create: (_) => ControllerCart(),),
         ChangeNotifierProvider(create: (_) => ControllerListUser(),),

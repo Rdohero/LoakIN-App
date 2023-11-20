@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:pas_android/Component/text_field_widget.dart';
+import 'package:otp_timer_button/otp_timer_button.dart';
+import 'package:pas_android/Component/otp_field_widget.dart';
 import 'package:pas_android/api/api_auth.dart';
-import 'package:pas_android/otp.dart';
+import 'package:pas_android/login.dart';
+import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
-class Register2 extends StatelessWidget {
-  const Register2({super.key});
+class NewPassword extends StatelessWidget {
+  const NewPassword({super.key});
 
-  Future<void> register(BuildContext context) async {
+  Future<void> createPassword(BuildContext context) async {
     var controllerLoginRegister = Provider.of<ApiLoginRegister>(context, listen: false);
 
-    final response = await controllerLoginRegister.registerUser();
+    final response = await controllerLoginRegister.newPassword();
 
     if (response.statusCode == 200) {
       controllerLoginRegister.submitLoading = false;
       Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute<void>(
-          builder: (BuildContext context) => const Otp(),
+          builder: (BuildContext context) => const Login(),
         ),
       );
     }
@@ -59,7 +61,7 @@ class Register2 extends StatelessWidget {
                             child: const Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Daftar Akun',
+                                'Lupa Password',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 22,
@@ -68,47 +70,43 @@ class Register2 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          myTextField(
-                              controller.fullnameController,
-                              'Name',
-                              false,
-                              TextInputType.text,
-                              Icons.person,
-                                (text) {
-                              controller.updateText(text, controller.fullnameController);
-                            },
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15,left: 15),
+                            child: Pinput(
+                              length: 6,
+                              defaultPinTheme: defaultPinTheme,
+                              focusedPinTheme: defaultPinTheme.copyWith(
+                                decoration: defaultPinTheme.decoration!.copyWith(
+                                  border: Border.all(color: const Color(0xFFEDF1FF)),
+                                ),
+                              ),
+                              controller: controller.otpController,
+                            ),
                           ),
-                          myTextField(
-                              controller.usernameController,
-                              'Username',
-                              false,
-                              TextInputType.text,
-                              Icons.person,
-                                (text) {
-                              controller.updateText(text, controller.usernameController);
-                            },
+                          controller.errorResponseForgotOtp.isEmpty ? Container() : Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(controller.errorResponseForgotOtp,
+                              style: const TextStyle(color: Colors.red,fontSize: 12),),
                           ),
-                          myTextField(
-                              controller.passwordController,
-                              'Password',
-                              true,
-                              TextInputType.visiblePassword,
-                              Icons.lock,
-                                (text) {
-                              controller.updateText(text, controller.passwordController);
+                          OtpTimerButton(
+                            height: 50,
+                            onPressed: () {
+                              controller.resendOtp();
                             },
+                            text: const Text(
+                              'Resend OTP',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            buttonType: ButtonType.text_button,
+                            backgroundColor: Colors.blue,
+                            duration: 120,
                           ),
-                        controller.eror.isEmpty ? Container() : Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(controller.eror,
-                            style: const TextStyle(color: Colors.red,fontSize: 12),),
-                        ),
                           Padding(
                             padding: const EdgeInsets.only(top: 15,bottom: 15),
                             child: ElevatedButton(
-                              onPressed: controller.isButtonEnabledRegister(context) ? () async {
+                              onPressed: controller.isButtonEnabled(context) ? () async {
                                 controller.submitLoading = true;
-                                register(context);
+                                createPassword(context);
                               } : null,
                               style: ElevatedButton.styleFrom(
                                 disabledBackgroundColor: const Color(0xFFA8A8A8),
@@ -118,7 +116,7 @@ class Register2 extends StatelessWidget {
                                 minimumSize: Size(screenWidth * 0.7, 43),
                               ),
                               child: controller.submitLoading
-                              ? SizedBox(
+                                  ? SizedBox(
                                 width: 123,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -132,17 +130,17 @@ class Register2 extends StatelessWidget {
                                       "Loading...",
                                       style: TextStyle(
                                         fontSize: 15,
-                                        color: controller.isButtonEnabledRegister(context) ? Colors.white : Colors.white,
+                                        color: controller.isButtonEnabled(context) ? Colors.white : Colors.white,
                                       ),
                                     ),
                                   ],
                                 ),
                               )
-                              : Text(
-                                'Daftar',
+                                  : Text(
+                                'Create New Password',
                                 style: TextStyle(
                                   fontSize: 15,
-                                  color: controller.isButtonEnabledRegister(context) ? Colors.white : Colors.white,
+                                  color: controller.isButtonEnabled(context) ? Colors.white : Colors.white,
                                 ),
                               ),
                             ),
