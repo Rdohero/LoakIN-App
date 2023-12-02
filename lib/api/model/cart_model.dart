@@ -12,7 +12,7 @@ class Cart {
   DateTime createdAt;
   DateTime updatedAt;
   ProductCart product;
-  UserCart user;
+  bool isSelected;
 
   Cart({
     required this.id,
@@ -22,7 +22,7 @@ class Cart {
     required this.createdAt,
     required this.updatedAt,
     required this.product,
-    required this.user,
+    required this.isSelected,
   });
 
   factory Cart.fromJson(Map<String, dynamic> json) => Cart(
@@ -33,7 +33,7 @@ class Cart {
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
     product: ProductCart.fromJson(json["Product"]),
-    user: UserCart.fromJson(json["User"]),
+    isSelected: false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -44,12 +44,13 @@ class Cart {
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
     "Product": product.toJson(),
-    "User": user.toJson(),
+    "isSelected": isSelected,
   };
 }
 
 class ProductCart {
   int id;
+  int userId;
   String image;
   String name;
   int price;
@@ -57,10 +58,11 @@ class ProductCart {
   String description;
   DateTime createdAt;
   DateTime updatedAt;
-  dynamic carts;
+  User user;
 
   ProductCart({
     required this.id,
+    required this.userId,
     required this.image,
     required this.name,
     required this.price,
@@ -68,11 +70,12 @@ class ProductCart {
     required this.description,
     required this.createdAt,
     required this.updatedAt,
-    required this.carts,
+    required this.user,
   });
 
   factory ProductCart.fromJson(Map<String, dynamic> json) => ProductCart(
     id: json["id"],
+    userId: json["user_id"],
     image: json["image"],
     name: json["name"],
     price: json["price"],
@@ -80,11 +83,12 @@ class ProductCart {
     description: json["description"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    carts: json["Carts"],
+    user: User.fromJson(json["User"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "user_id": userId,
     "image": image,
     "name": name,
     "price": price,
@@ -92,44 +96,44 @@ class ProductCart {
     "description": description,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
-    "Carts": carts,
+    "User": user.toJson(),
   };
 }
 
-class UserCart {
+class User {
   int id;
   String foto;
   String fullname;
   String username;
+  int saldo;
   String email;
   String password;
   bool isActive;
-  dynamic carts;
   DateTime createdAt;
   DateTime updatedAt;
 
-  UserCart({
+  User({
     required this.id,
     required this.foto,
     required this.fullname,
     required this.username,
+    required this.saldo,
     required this.email,
     required this.password,
     required this.isActive,
-    required this.carts,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory UserCart.fromJson(Map<String, dynamic> json) => UserCart(
+  factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["id"],
     foto: json["foto"],
     fullname: json["fullname"],
     username: json["username"],
+    saldo: json["saldo"],
     email: json["email"],
     password: json["password"],
     isActive: json["is_active"],
-    carts: json["Carts"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );
@@ -139,10 +143,10 @@ class UserCart {
     "foto": foto,
     "fullname": fullname,
     "username": username,
+    "saldo": saldo,
     "email": email,
     "password": password,
     "is_active": isActive,
-    "Carts": carts,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };

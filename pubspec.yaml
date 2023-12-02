@@ -48,6 +48,12 @@ dependencies:
   otp_timer_button: ^1.1.0
   flutter_pw_validator: ^1.6.0
   image_picker: ^1.0.4
+  google_sign_in: ^6.1.6
+  flutter_secure_storage: ^9.0.0
+  firebase_core: ^2.3.0
+  firebase_auth: ^4.5.0
+  connectivity_plus: ^5.0.2
+  lottie: ^2.7.0
 
 flutter_native_splash:
   android: true
@@ -98,11 +104,19 @@ flutter:
     - assets/images/icons_images/home_icon.png
     - assets/images/icons_images/keranjang_icon.png
     - assets/images/icons_images/pengguna_icon.png
+    - assets/images/icons_images/pengiriman_icon.png
+    - assets/images/icons_images/pengiriman.png
     - assets/images/icons_images/home.png
+    - assets/images/icons_images/kupon.png
     - assets/images/icons_images/keranjang.png
     - assets/images/icons_images/pengguna.png
     - assets/images/background.png
     - assets/images/gitar.jpeg
+    - assets/animations/no_internet.json
+    - assets/animations/no_cart.json
+    - assets/animations/add_cart.json
+    - assets/animations/no_search.json
+    - assets/animations/loading.json
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

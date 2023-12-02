@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pas_android/api/navigator_provider.dart';
 import 'package:pas_android/cart_screen.dart';
 import 'package:pas_android/home.dart';
+import 'package:pas_android/pengiriman.dart';
 import 'package:pas_android/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +10,9 @@ class BottomNavigator extends StatelessWidget {
   BottomNavigator({super.key});
 
   final screens = [
-    Home(),
+    const Home(),
     const CartScreen(),
+    const Pengiriman(),
     const Profile(),
   ];
 
@@ -29,7 +31,7 @@ class BottomNavigator extends StatelessWidget {
         unselectedIconTheme: const IconThemeData(size: 20),
         selectedIconTheme: const IconThemeData(size: 20),
         unselectedItemColor: const Color(0xFF0479CD),
-        selectedLabelStyle: const TextStyle(color: Color(0xFF0479CD)),
+        selectedItemColor: const Color(0xFF0479CD),
         unselectedFontSize: 10,
         items: const [
           BottomNavigationBarItem(
@@ -41,6 +43,11 @@ class BottomNavigator extends StatelessWidget {
             activeIcon: ImageIcon(AssetImage("assets/images/icons_images/keranjang_icon.png")),
             icon: ImageIcon(AssetImage("assets/images/icons_images/keranjang.png")),
             label: "Keranjang",
+          ),
+          BottomNavigationBarItem(
+            activeIcon: ImageIcon(AssetImage("assets/images/icons_images/pengiriman_icon.png")),
+            icon: ImageIcon(AssetImage("assets/images/icons_images/pengiriman.png")),
+            label: "Pengiriman",
           ),
           BottomNavigationBarItem(
             activeIcon: ImageIcon(AssetImage("assets/images/icons_images/pengguna_icon.png")),

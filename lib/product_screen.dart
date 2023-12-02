@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pas_android/Component/money_format.dart';
+import 'package:pas_android/Connectivity/conectivity_status.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/cart_api.dart';
+import 'package:pas_android/api/google_controller.dart';
 import 'package:pas_android/api/model/product_model.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
@@ -12,10 +15,12 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var connectivityController = Provider.of<ConnectivityStatus>(context, listen: true);
     var controllerProduct = Provider.of<ControllerProduct>(context, listen: true);
     var controllerCart = Provider.of<ControllerCart>(context, listen: true);
     var controllerUser = Provider.of<ControllerListUser>(context, listen: true);
-    late var product = controllerProduct.productData[controllerProduct.index.toInt()];
+    var controllerGoogle = Provider.of<GoogleController>(context, listen: true);
+    late var product = controllerProduct.productDataById[0];
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -28,6 +33,7 @@ class ProductScreen extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: GestureDetector(
             onTap: () {
+              controllerProduct.isLoadingDetail = true;
               controllerCart.counter2 = 1;
               Navigator.pop(context);
             },
@@ -40,8 +46,20 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: controllerProduct.isLoading ? const Center(child: CircularProgressIndicator(color: Colors.blue,)) : detailProduct(controllerProduct),
-      bottomSheet: Container(
+      body: connectivityController == ConnectivityStatus.Wifi ||
+          connectivityController == ConnectivityStatus.Celluler
+          ? controllerProduct.isLoadingDetail ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),) : detailProduct(controllerProduct)
+          : Container(
+        color: Colors.white,
+        child: Center(
+          child: Lottie.asset('assets/animations/no_internet.json'),
+        ),
+      ),
+      bottomSheet: connectivityController == ConnectivityStatus.Wifi ||
+          connectivityController == ConnectivityStatus.Celluler
+          ? controllerProduct.isLoadingDetail
+          ? null
+          : Container(
         width: double.infinity,
         height: 65,
         decoration: const ShapeDecoration(
@@ -59,7 +77,7 @@ class ProductScreen extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     context: context,
                     builder: (BuildContext context) {
-                      return checkout(context,product,controllerCart, controllerUser, controllerProduct);
+                      return checkout(context,product,controllerCart, controllerUser, controllerProduct, controllerGoogle);
                     }
                 );
               },
@@ -68,8 +86,8 @@ class ProductScreen extends StatelessWidget {
                 shadowColor: Colors.transparent,
                 foregroundColor: Colors.white, backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 minimumSize: const Size(50, 30),
               ),
               child: const Icon(
@@ -105,14 +123,15 @@ class ProductScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      )
+          : null,
     );
   }
 }
 
 
 Widget detailProduct(ControllerProduct controllerProduct) {
-  late var product = controllerProduct.productData[controllerProduct.index.toInt()];
+  late var product = controllerProduct.productDataById[0];
   return SingleChildScrollView(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +183,7 @@ Widget detailProduct(ControllerProduct controllerProduct) {
   );
 }
 
-Widget checkout(context,Product product, ControllerCart controllerCart, ControllerListUser controllerUser, ControllerProduct controllerProduct) {
+Widget checkout(context,Product product, ControllerCart controllerCart, ControllerListUser controllerUser, ControllerProduct controllerProduct, GoogleController controllerGoogle) {
   return GestureDetector(
     onTap: () {
       Navigator.pop(context);
@@ -262,29 +281,19 @@ Widget checkout(context,Product product, ControllerCart controllerCart, Controll
             padding: const EdgeInsets.only(top: 20),
             child: GestureDetector(
               onTap: () async {
-                final response = await controllerCart.addNewCart(controllerUser.userById[0].id, product.id, controllerCart.counter);
+                final response = await controllerCart.addNewCart(controllerUser.userById.isNotEmpty ? controllerUser.userById[0].id : controllerGoogle.user!.uid.hashCode, product.id, controllerCart.counter);
                 Navigator.pop(context);
                 if (response.statusCode == 200) {
                   controllerCart.counter2 = 1;
                   showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      backgroundColor: const Color(0xFFD9D9D9),
+                      backgroundColor: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100.0),
+                        borderRadius: BorderRadius.circular(200),
                       ),
-                      content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const Text("Di tambahkan Ke Keranjang !"),
-                          IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                      contentTextStyle: const TextStyle(fontSize: 15,color: Colors.black),
+                      content: Lottie.asset('assets/animations/add_cart.json', repeat: false,),
                     ),
                   );
                 } else {

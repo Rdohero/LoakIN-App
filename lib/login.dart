@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pas_android/Component/google_facebook.dart';
 import 'package:pas_android/Component/text_field_widget.dart';
+import 'package:pas_android/Connectivity/conectivity_status.dart';
 import 'package:pas_android/api/api_auth.dart';
 import 'package:pas_android/Forgot%20Password%20All%20Screen/otp_forgot_password.dart';
+import 'package:pas_android/api/google_controller.dart';
 import 'package:pas_android/register.dart';
 import 'package:pas_android/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +36,15 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Consumer<ApiLoginRegister>(
-        builder: (context, controller, child) {
+    return Consumer3<ApiLoginRegister,GoogleController, ConnectivityStatus>(
+        builder: (context, controller, googleController,connectivity, child) {
+          var user = googleController.user;
           return GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Scaffold(
-              body: Container(
+              body: connectivity == ConnectivityStatus.Wifi ||
+                  connectivity == ConnectivityStatus.Celluler
+                  ? Container(
                 height: double.infinity,
                 width: double.infinity,
                 decoration: const BoxDecoration(
@@ -182,12 +188,27 @@ class Login extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               buttonGoBuk(
-                                  null,
+                                  () async {
+                                      try {
+                                        await googleController.signInWithGoogle(context);
+                                        Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                              (Route<dynamic> route) => false,
+                                        );
+                                      } catch (error) {
+                                        final snackBar = SnackBar(content: Text(error.toString()));
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      }
+                                  },
                                   screenWidth,
                                   const Text("Google", style: TextStyle(color: Colors.black,fontSize: 11)),
                                   Image.asset("assets/images/icons_images/devicon_google.png",width: 20,height: 20,)
                               ),
-                              buttonGoBuk(null,
+                              buttonGoBuk(
+                                () {
+                                  final snackBar = SnackBar(content: Text(user.toString()));
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                },
                                 screenWidth,
                                 const Text("Facebook", style: TextStyle(color: Colors.black,fontSize: 11)),
                                 const Icon(Icons.facebook, color: Colors.blue,),
@@ -226,6 +247,12 @@ class Login extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              )
+                  : Container(
+                color: Colors.white,
+                child: Center(
+                  child: Lottie.asset('assets/animations/no_internet.json'),
                 ),
               ),
             ),
