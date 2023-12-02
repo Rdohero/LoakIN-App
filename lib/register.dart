@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pas_android/Component/google_facebook.dart';
 import 'package:pas_android/Component/text_field_widget.dart';
+import 'package:pas_android/Connectivity/conectivity_status.dart';
 import 'package:pas_android/api/api_auth.dart';
 import 'package:pas_android/login.dart';
 import 'package:pas_android/register2.dart';
@@ -13,12 +15,14 @@ class Register extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Consumer<ApiLoginRegister>(
-        builder: (context, controller, child) {
+    return Consumer2<ApiLoginRegister, ConnectivityStatus>(
+        builder: (context, controller, connectivity ,child) {
           return GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Scaffold(
-              body: Container(
+              body: connectivity == ConnectivityStatus.Wifi ||
+                  connectivity == ConnectivityStatus.Celluler
+                  ? Container(
                 height: double.infinity,
                 width: double.infinity,
                 decoration: const BoxDecoration(
@@ -148,6 +152,12 @@ class Register extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              )
+                  : Container(
+                color: Colors.white,
+                child: Center(
+                  child: Lottie.asset('assets/animations/no_internet.json'),
                 ),
               ),
             ),

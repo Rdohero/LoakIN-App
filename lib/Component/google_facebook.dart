@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Widget buttonGoBuk(onPressed, screenWidth, Text text, icon) {
   return ElevatedButton.icon(
-    onPressed: () {onPressed;},
+    onPressed: onPressed,
     icon: icon,
     label: text,
     style: ElevatedButton.styleFrom(

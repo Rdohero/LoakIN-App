@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pas_android/Component/account.dart';
+import 'package:pas_android/Connectivity/conectivity_status.dart';
 import 'package:pas_android/api/api_utama.dart';
+import 'package:pas_android/api/google_controller.dart';
 import 'package:pas_android/api/user_api.dart';
 import 'package:pas_android/settings.dart';
 import 'package:provider/provider.dart';
@@ -11,18 +14,33 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var connectivityController = Provider.of<ConnectivityStatus>(context, listen: true);
     return Scaffold(
-      appBar: AppBar(
+      appBar: connectivityController == ConnectivityStatus.Wifi ||
+          connectivityController == ConnectivityStatus.Celluler
+          ? AppBar(
         backgroundColor: Colors.white,
-        elevation: 1,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(10.0),
+          child: Container(
+            height: 1.0,
+            color: Colors.grey.withOpacity(0.5),
+          ),
+        ),
+        elevation: 0,
         centerTitle: true,
         title: const Text("Pengguna", style: TextStyle(fontWeight: FontWeight.w500,color: Colors.black),),
-      ),
-      body: Consumer<ControllerListUser>(
-          builder: (BuildContext context, controller,child) {
-            late var user = controller.userById[0];
-            return controller.isLoading
-                ? const Center(child: CircularProgressIndicator())
+      )
+      : null,
+      body: Consumer2<ControllerListUser, GoogleController>(
+          builder: (BuildContext context, controller, controllerGoogle, child) {
+            late var userGoogle = controllerGoogle.user;
+            late var user = controller.userById;
+            late var loading = user.isNotEmpty ? controller.isLoading : controllerGoogle.isLoading;
+            return connectivityController == ConnectivityStatus.Wifi ||
+                connectivityController == ConnectivityStatus.Celluler
+                ? loading
+                ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),)
                 : Center(
               child: AnimationLimiter(
                 child: Column(
@@ -40,12 +58,26 @@ class Profile extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 15,top: 15,right: 15,bottom: 15),
                                 child: ClipOval(
-                                  child: SizedBox(
+                                  child: user.isNotEmpty ? SizedBox(
                                     width: 60,
                                     height: 60,
-                                    child: user.foto.isNotEmpty
+                                    child: user[0].foto.isNotEmpty
                                         ? Image(
-                                      image: NetworkImage("${Api.baseUrl}/${user.foto}"),
+                                      image: NetworkImage("${Api.baseUrl}/${user[0].foto}"),
+                                      fit: BoxFit.cover,
+                                    )
+                                        : const Icon(
+                                      Icons.account_circle,
+                                      size: 60,
+                                      color: Colors.grey,
+                                    ),
+                                  )
+                                      : SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: userGoogle?.photoURL != null
+                                        ? Image(
+                                      image: NetworkImage(userGoogle!.photoURL.toString()),
                                       fit: BoxFit.cover,
                                     )
                                         : const Icon(
@@ -59,8 +91,8 @@ class Profile extends StatelessWidget {
                               Column(
                                 crossAxisAlignment:  CrossAxisAlignment.start,
                                 children: [
-                                  Text(user.fullname,style: const TextStyle(color: Colors.black,fontSize: 19,fontWeight: FontWeight.bold),),
-                                  Text(user.username,style: const TextStyle(color: Colors.black,fontSize: 14,),),
+                                  Text(user.isNotEmpty ? user[0].fullname : (userGoogle?.displayName).toString(),style: const TextStyle(color: Colors.black,fontSize: 19,fontWeight: FontWeight.bold),),
+                                  Text(user.isNotEmpty ? user[0].username : "",style: const TextStyle(color: Colors.black,fontSize: 14,),),
                                 ],
                               ),
                             ],
@@ -71,7 +103,7 @@ class Profile extends StatelessWidget {
                               children: [
                                 const Icon(Icons.email, size: 15),
                                 const SizedBox(width: 5,),
-                                Text(user.email,style: const TextStyle(color: Colors.black,fontSize: 14,),)
+                                Text(user.isNotEmpty ? user[0].email : (userGoogle?.email).toString(),style: const TextStyle(color: Colors.black,fontSize: 14,),)
                               ],
                             ),
                           ),
@@ -119,6 +151,12 @@ class Profile extends StatelessWidget {
                     ],
                   ),
                 ),
+              )
+            )
+                : Container(
+              color: Colors.white,
+              child: Center(
+                child: Lottie.asset('assets/animations/no_internet.json'),
               ),
             );
           }

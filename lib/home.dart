@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pas_android/Component/money_format.dart';
+import 'package:pas_android/Connectivity/conectivity_status.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/carousel_controller.dart';
+import 'package:pas_android/api/cart_api.dart';
+import 'package:pas_android/api/google_controller.dart';
 import 'package:pas_android/api/model/product_model.dart';
 import 'package:pas_android/api/poster_api.dart';
 import 'package:pas_android/api/product_api.dart';
@@ -13,180 +17,231 @@ import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Home extends StatelessWidget {
-  Home({super.key});
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
     Future<void> refresh() async {
+      var controllerPoster = Provider.of<ControllerPoster>(context, listen: false);
       var controllerProduct = Provider.of<ControllerProduct>(context, listen: false);
       controllerProduct.isLoading = true;
+      controllerPoster.getPoster();
       controllerProduct.getAllProduct();
     }
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          body:
-          Consumer4<ControllerListUser , CarouselIndex , ControllerProduct, ControllerPoster>(
-              builder: (context, controller, controllerCarousel , controllerProduct, controllerPoster, child) {
-                late var user = controller.userById[0];
-                return controller.isLoading ? const Center(child: CircularProgressIndicator()) : RefreshIndicator(
-                  onRefresh: refresh,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 25,
-                          decoration: const BoxDecoration(color: Color(0xFF0479CD)),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 150,
-                          decoration: const BoxDecoration(color: Color(0xFF0479CD)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+        body: Consumer6<ControllerListUser , CarouselIndex , ControllerProduct, ControllerPoster, GoogleController, ControllerCart >(
+            builder: (context, controller, controllerCarousel , controllerProduct, controllerPoster, controllerGoogle, controllerCart, child) {
+              var connectivityController = Provider.of<ConnectivityStatus>(
+                  context, listen: true);
+              late var userGoogle = controllerGoogle.user;
+              late var userApi = controller.userById;
+              late var loading = userApi.isNotEmpty
+                  ? controller.isLoading
+                  : controllerGoogle.isLoading;
+              return connectivityController == ConnectivityStatus.Wifi ||
+                  connectivityController == ConnectivityStatus.Celluler
+                  ? loading
+                  ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),)
+                  : RefreshIndicator(
+                onRefresh: refresh,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 25,
+                      decoration: const BoxDecoration(color: Color(
+                          0xFF0479CD)),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 150,
+                      decoration: const BoxDecoration(color: Color(
+                          0xFF0479CD)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  SizedBox(
-                                    width: screenWidth * 0.65,
-                                    child: const Text(
-                                      'Welcome back 🙌',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 25,
-                                        fontFamily: 'SFProDisplay',
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                              SizedBox(
+                                width: screenWidth * 0.65,
+                                child: const Text(
+                                  'Welcome back 🙌',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontFamily: 'SFProDisplay',
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  ClipOval(
-                                    child: SizedBox(
-                                      width: 35,
-                                      height: 35,
-                                      child: user.foto.isNotEmpty
-                                          ? Image(
-                                        image: NetworkImage("${Api.baseUrl}/${user.foto}"),
-                                        fit: BoxFit.cover,
-                                      )
-                                          : const Icon(
-                                        Icons.account_circle,
-                                        size: 35,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 13),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(left: 20),
-                                        child: TextField(
-                                          onTap: () {
-                                            FocusScope.of(context).unfocus();
-                                            showSearch(
-                                              context: context,
-                                              delegate: SearchProduct(),
-                                            );
-                                          },
-                                          decoration: const InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            prefixIcon: Icon(Icons.search,size: 20,),
-                                            hintText: "Barang murah berkualitas",
-                                            hintStyle: TextStyle(fontSize: 13),
-                                            contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(100)),
-                                              borderSide: BorderSide(color: Colors.white),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(100)),
-                                              borderSide: BorderSide(color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth * 0.2,
-                                      child: IconButton(
-                                        onPressed: () {
-                                        },
-                                        icon: const Icon(Icons.notifications_none,color: Colors.white,size: 35),
-                                      ),
-                                    ),
-                                  ],
+                              ClipOval(
+                                child: userApi.isNotEmpty ? SizedBox(
+                                  width: 35,
+                                  height: 35,
+                                  child: userApi[0].foto.isNotEmpty
+                                      ? Image(
+                                    image: NetworkImage(
+                                        "${Api.baseUrl}/${userApi[0].foto}"),
+                                    fit: BoxFit.cover,
+                                  )
+                                      : const Icon(
+                                    Icons.account_circle,
+                                    size: 35,
+                                    color: Colors.grey,
+                                  ),
+                                )
+                                    : SizedBox(
+                                  width: 35,
+                                  height: 35,
+                                  child: userGoogle?.photoURL != null
+                                      ? Image(
+                                    image: NetworkImage(
+                                        userGoogle!.photoURL.toString()),
+                                    fit: BoxFit.cover,
+                                  )
+                                      : const Icon(
+                                    Icons.account_circle,
+                                    size: 35,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 15,left: 20),
-                          child: Text("Location"),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 15,top: 5),
-                          child: Row(
-                            children: [
-                              Icon(Icons.location_pin,color: Colors.red,),
-                              Text("Kudus, Bestio",style: TextStyle(fontFamily: "SFProDisplay", fontWeight: FontWeight.normal),),
-                              Icon(Icons.arrow_drop_down,color: Colors.black,)
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 15,),
-                        CarouselSlider.builder(
-                          itemCount: controllerPoster.posterData.length,
-                          options: CarouselOptions(
-                              enableInfiniteScroll: false,
-                              autoPlay: true,
-                              enlargeCenterPage: true,
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              autoPlayInterval: const Duration(seconds: 4),
-                              aspectRatio: 2.8/1,
-                              onPageChanged: (index, reason) => controllerCarousel.change(index)
-                          ),
-                          itemBuilder: (context, index ,realIndex){
-                            final poster = controllerPoster.posterData[index];
-                            return buildImage(poster.poster, index);
-                          },
-                        ),
-                        const SizedBox(height: 12,),
-                        Center(child: buildIndicator(controllerCarousel, controllerPoster)),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20,bottom: 20),
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 23,left: 23),
-                            child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Jelajahi produk terbaru kami", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),),
-                                  Text("see all", style: TextStyle(fontSize: 12),),
-                                ]
+                          Padding(
+                            padding: const EdgeInsets.only(top: 13),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .spaceAround,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 20),
+                                    child: TextField(
+                                      onTap: () {
+                                        FocusScope.of(context).unfocus();
+                                        showSearch(
+                                          context: context,
+                                          delegate: SearchProduct(),
+                                        );
+                                      },
+                                      decoration: const InputDecoration(
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        prefixIcon: Icon(
+                                          Icons.search, size: 20,),
+                                        hintText: "Barang murah berkualitas",
+                                        hintStyle: TextStyle(fontSize: 13),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.0),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(100)),
+                                          borderSide: BorderSide(
+                                              color: Colors.white),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(100)),
+                                          borderSide: BorderSide(
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: screenWidth * 0.2,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.notifications_none,
+                                        color: Colors.white, size: 35),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        listProduct(controllerProduct,context),
-                        const SizedBox(height: 50,),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
-          ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 15, left: 20),
+                      child: Text("Location"),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 15, top: 5),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_pin, color: Colors.red,),
+                          Text("Kudus, Bestio", style: TextStyle(
+                              fontFamily: "SFProDisplay",
+                              fontWeight: FontWeight.normal),),
+                          Icon(Icons.arrow_drop_down, color: Colors.black,)
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15,),
+                    controllerPoster.posterData.isNotEmpty
+                    ? CarouselSlider.builder(
+                      itemCount: controllerPoster.posterData.length,
+                      options: CarouselOptions(
+                          enableInfiniteScroll: false,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          autoPlayInterval: const Duration(seconds: 4),
+                          aspectRatio: 2.8 / 1,
+                          onPageChanged: (index, reason) =>
+                              controllerCarousel.change(index)
+                      ),
+                      itemBuilder: (context, index, realIndex) {
+                        final poster = controllerPoster.posterData[index];
+                        return buildImage(poster.poster, index);
+                      },
+                    )
+                        : Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),),
+                    const SizedBox(height: 12,),
+                    controllerPoster.posterData.isNotEmpty
+                        ? Center(child: buildIndicator(
+                        controllerCarousel, controllerPoster))
+                    : Container(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 20),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 23, left: 23),
+                        child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Jelajahi produk terbaru kami",
+                                style: TextStyle(fontSize: 15,
+                                    fontWeight: FontWeight.w500),),
+                              Text(
+                                "see all", style: TextStyle(fontSize: 12),),
+                            ]
+                        ),
+                      ),
+                    ),
+                    listProduct(controllerProduct, context),
+                    const SizedBox(height: 50,),
+                  ],
+                ),
+              )
+                  : Container(
+                color: Colors.white,
+                child: Center(
+                  child: Lottie.asset('assets/animations/no_internet.json'),
+                ),
+              );
+            }
+        ),
       ),
     );
   }
@@ -211,7 +266,7 @@ Widget buildImage(String urlImage, int index) {
 
 Widget listProduct(ControllerProduct controllerProduct,BuildContext context) {
   return controllerProduct.isLoading
-      ? const CircularProgressIndicator()
+      ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),)
       : GridView.count(
     padding: EdgeInsets.zero,
     shrinkWrap: true,
@@ -224,7 +279,7 @@ Widget listProduct(ControllerProduct controllerProduct,BuildContext context) {
           (index){
         final product = controllerProduct.productData[index];
         return ProductItem(product: product, onPressed: () {
-          controllerProduct.index = index;
+          controllerProduct.getByProductId(product.id);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ProductScreen()),

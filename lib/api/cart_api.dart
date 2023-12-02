@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/model/cart_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ControllerCart extends ChangeNotifier {
   bool _isChecked = false;
@@ -13,10 +12,42 @@ class ControllerCart extends ChangeNotifier {
     _isChecked = value;
     notifyListeners();
   }
-
   List<Cart> cartData = [];
+  List<Cart> selectedCarts = [];
   bool isLoading = true;
   int counter2 = 1;
+
+  void disableAllSelection() {
+    for (var cart in cartData) {
+      cart.isSelected = false;
+    }
+
+    updateSelectedCarts();
+    notifyListeners();
+  }
+
+  int calculateTotalPrice() {
+    return selectedCarts.fold(0, (total, cart) => total + (cart.quantity * cart.product.price)).toInt();
+  }
+
+  double calculatePrice(int quantity,int price ) {
+    return (quantity * price).toDouble();
+  }
+
+  void toggleAllSelection() {
+    bool allSelected = cartData.isNotEmpty && cartData.every((cart) => cart.isSelected);
+
+    for (var cart in cartData) {
+      cart.isSelected = !allSelected;
+    }
+
+    updateSelectedCarts();
+    notifyListeners();
+  }
+
+  void updateSelectedCarts() {
+    selectedCarts = cartData.where((cart) => cart.isSelected).toList();
+  }
 
   int get counter => counter2;
 
@@ -32,14 +63,15 @@ class ControllerCart extends ChangeNotifier {
     }
   }
 
-  getCart() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    var token = pref.getString("Token");
-    final response = await http.post(
-      Uri.parse('${Api.baseUrl}/userAuth/user/cart'),
-      body: {
-        'Token' : token,
-      },
+  void toggleSelection(Cart cart) {
+    cart.isSelected = !cart.isSelected;
+    updateSelectedCarts();
+    notifyListeners();
+  }
+
+  getCart(int userID) async {
+    final response = await http.get(
+      Uri.parse('${Api.baseUrl}/user/cart/$userID'),
     );
 
     if (response.statusCode == 200) {
@@ -78,6 +110,7 @@ class ControllerCart extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       cartData = cartFromJson(response.body);
+      disableAllSelection();
       notifyListeners();
     } else {
       throw Exception('Failed to create cart');

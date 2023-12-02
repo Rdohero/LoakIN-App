@@ -76,11 +76,11 @@ class ForgotNewPassword extends StatelessWidget {
                             numericCharCount: 1,
                             specialCharCount: 1,
                             width: 300,
-                            height: 100,
+                            height: 125,
                             onSuccess: () {},
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 15,bottom: 15),
+                            padding: const EdgeInsets.only(top:15 ,bottom: 15),
                             child: ElevatedButton(
                               onPressed: controller.isButtonEnabledPasswordOtp(context) ? ()  {
                                 Navigator.push(
