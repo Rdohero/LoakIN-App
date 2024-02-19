@@ -13,6 +13,7 @@ import 'package:pas_android/api/payment_controller.dart';
 import 'package:pas_android/api/poster_api.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
+import 'package:pas_android/database/database_instance.dart';
 import 'package:pas_android/firebase_options.dart';
 import 'package:pas_android/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GoogleController(),),
         ChangeNotifierProvider(create: (_) => PaymentController(),),
         ChangeNotifierProvider(create: (_) => InvoiceController(),),
+        ChangeNotifierProvider(create: (_) => DatabaseInstance(),),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -9,6 +9,7 @@ class ConnectivityService{
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       var connectivityStatus = _getStatusFromResult(result);
       connectionStatusController.add(connectivityStatus);
+      print(connectivityStatus);
     });
   }
 
