@@ -6,6 +6,7 @@ import 'package:pas_android/Connectivity/conectivity_status.dart';
 import 'package:pas_android/api/api_utama.dart';
 import 'package:pas_android/api/google_controller.dart';
 import 'package:pas_android/api/user_api.dart';
+import 'package:pas_android/favorite.dart';
 import 'package:pas_android/settings.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +17,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     var connectivityController = Provider.of<ConnectivityStatus>(context, listen: true);
     return Scaffold(
-      appBar: connectivityController == ConnectivityStatus.Wifi ||
-          connectivityController == ConnectivityStatus.Celluler
-          ? AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.white,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(10.0),
@@ -30,18 +29,13 @@ class Profile extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: const Text("Pengguna", style: TextStyle(fontWeight: FontWeight.w500,color: Colors.black),),
-      )
-      : null,
+      ),
       body: Consumer2<ControllerListUser, GoogleController>(
           builder: (BuildContext context, controller, controllerGoogle, child) {
             late var userGoogle = controllerGoogle.user;
             late var user = controller.userById;
             late var loading = user.isNotEmpty ? controller.isLoading : controllerGoogle.isLoading;
-            return connectivityController == ConnectivityStatus.Wifi ||
-                connectivityController == ConnectivityStatus.Celluler
-                ? loading
-                ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),)
-                : Center(
+            return Center(
               child: AnimationLimiter(
                 child: Column(
                   children: AnimationConfiguration.toStaggeredList(
@@ -115,7 +109,12 @@ class Profile extends StatelessWidget {
                         child: Column(
                           children: [
                             accountButton(
-                                    () {},
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const FavoriteScreen()),
+                                      );
+                                    },
                                 Icons.favorite_border_rounded,
                                 "Favorite"
                             ),
@@ -152,12 +151,6 @@ class Profile extends StatelessWidget {
                   ),
                 ),
               )
-            )
-                : Container(
-              color: Colors.white,
-              child: Center(
-                child: Lottie.asset('assets/animations/no_internet.json'),
-              ),
             );
           }
       ),

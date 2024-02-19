@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pas_android/Component/money_format.dart';
 import 'package:pas_android/Connectivity/conectivity_status.dart';
@@ -8,6 +9,7 @@ import 'package:pas_android/api/google_controller.dart';
 import 'package:pas_android/api/model/product_model.dart';
 import 'package:pas_android/api/product_api.dart';
 import 'package:pas_android/api/user_api.dart';
+import 'package:pas_android/database/database_instance.dart';
 import 'package:provider/provider.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -15,11 +17,13 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controllerFavorite= Provider.of<DatabaseInstance>(context, listen: true);
     var connectivityController = Provider.of<ConnectivityStatus>(context, listen: true);
     var controllerProduct = Provider.of<ControllerProduct>(context, listen: true);
     var controllerCart = Provider.of<ControllerCart>(context, listen: true);
     var controllerUser = Provider.of<ControllerListUser>(context, listen: true);
     var controllerGoogle = Provider.of<GoogleController>(context, listen: true);
+    controllerFavorite.database();
     late var product = controllerProduct.productDataById[0];
     return Scaffold(
       backgroundColor: Colors.white,
@@ -48,7 +52,7 @@ class ProductScreen extends StatelessWidget {
       ),
       body: connectivityController == ConnectivityStatus.Wifi ||
           connectivityController == ConnectivityStatus.Celluler
-          ? controllerProduct.isLoadingDetail ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),) : detailProduct(controllerProduct)
+          ? controllerProduct.isLoadingDetail ? Center(child: Lottie.asset('assets/animations/loading.json',width: 100,height: 100),) : detailProduct(controllerProduct, controllerFavorite)
           : Container(
         color: Colors.white,
         child: Center(
@@ -130,8 +134,9 @@ class ProductScreen extends StatelessWidget {
 }
 
 
-Widget detailProduct(ControllerProduct controllerProduct) {
+Widget detailProduct(ControllerProduct controllerProduct, DatabaseInstance controllerFavorite) {
   late var product = controllerProduct.productDataById[0];
+  bool isFavorite = controllerFavorite.FavoriteData.any((item) => item.id == product.id);
   return SingleChildScrollView(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +172,27 @@ Widget detailProduct(ControllerProduct controllerProduct) {
                 ],
               ),
             ),
-            const Expanded(child: Icon(Icons.favorite_border, color: Colors.blue,))
+            Expanded(child: InkWell(
+              onTap: () async {
+                var imageUrl = Uri.parse(product.image);
+                var image = await get(Uri.parse("${Api.baseUrl}/$imageUrl"));
+                var bytes = image.bodyBytes;
+                isFavorite ? await controllerFavorite.delete(product.id)
+                    : await controllerFavorite.insert({
+                  'id' : product.id,
+                  'image' : bytes, 
+                  'price' : product.price,
+                  'name' : product.name,
+                  'location' : product.location,
+                  'description' : product.description,
+                });
+              },
+              child: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? Colors.red : Colors.blue,
+              ),
+            ),
+            ),
           ],
         ),
         Container(
